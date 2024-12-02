@@ -6,9 +6,7 @@ import Login from './src/pages/login';
 export default function App() {
   const log = true
   return (
-    <>
-      <Aplicacion />
-    </>
+
     <>
       <StatusBar style="auto" />
       {log ? <Aplicacion /> : <Login />}
