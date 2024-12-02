@@ -5,12 +5,9 @@ import Login from './src/pages/login';
 export default function App() {
   const log = true
   return (
-    <View style={styles.container}>
-      {
-        log?  <Aplicacion />:<Login />
-      }
-      
-    </View>
+    <>
+      <Aplicacion />
+    </>
   );
 }
 

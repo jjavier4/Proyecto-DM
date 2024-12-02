@@ -40,6 +40,6 @@ const MyDrawer = createDrawerNavigator({
 
 const Navigation = createStaticNavigation(MyDrawer);
 
-export default function Aplicacion() {
+export default function App() {
   return <Navigation />;
 }
