@@ -54,6 +54,7 @@ const Drawer = createDrawerNavigator();
 export default function Aplicacion() {
     const [role, setRole] = useState(null);
 
+    
     const obtenerRole = async () => {
         const storedRole = await SecureStore.getItemAsync('role');
         if (storedRole) {
@@ -84,11 +85,9 @@ export default function Aplicacion() {
     )
 
     return (
-        <Drawer.Navigator initialRouteName="Home">
+        <Drawer.Navigator initialRouteName="Mesas">
             {role === 'Admin' ? (
                 <>
-                    <Drawer.Screen name="Home" component={HomeScreen} />
-                    <Drawer.Screen name="Profile" component={ProfileScreen} />
                     <Drawer.Screen name="Mesas" component={ViewMesas} />
                     <Drawer.Screen name="Pedidos" component={Pedidos} />
                     <Drawer.Screen name="Platillos" component={Platillos} />
@@ -99,8 +98,7 @@ export default function Aplicacion() {
                 </>
             ) : role === 'Mesero' ? (
                 <>
-                    <Drawer.Screen name="Home" component={HomeScreen} />
-                    <Drawer.Screen name="Profile2" component={ProfileScreen2} />
+                    <Drawer.Screen name="Mesas" component={ViewMesas} />
                     <Drawer.Screen name="Pedidos" component={Pedidos} />
                     <Drawer.Screen name="Cerrar sesión" component={Logout} />
                 </>
