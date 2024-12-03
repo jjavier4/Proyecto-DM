@@ -1,8 +1,18 @@
 import * as React from 'react';
-import { Text, View, Button } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
+import { useEffect, useState } from 'react';
+import * as SecureStore from 'expo-secure-store';
+import { Text, View, Button, ActivityIndicator, StyleSheet } from 'react-native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import ViewMesas from './mesas/viewMesas';
+import Logout from './logout';
+import { auth } from '../utils/firebase';
+
+import AddUser from './AddUser'
+import Platillos from './Platillos'
+import AddPlatillo from './AddPlatillo';
+import UpdatePlatillo from './UpdatePlatillo';
+import Pedidos from './Pedidos';
+
 function HomeScreen({ navigation }) {
     return (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -27,12 +37,10 @@ function ProfileScreen({ navigation }) {
     );
 }
 
-
-
 function ProfileScreen2({ navigation }) {
     return (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-            <Text>Profile Screen</Text>
+            <Text>Profile Screen 2</Text>
             <Button
                 title="Go to Home"
                 onPress={() => navigation.navigate('Home')}
@@ -40,31 +48,90 @@ function ProfileScreen2({ navigation }) {
         </View>
     );
 }
+
 const Drawer = createDrawerNavigator();
 
-
 export default function Aplicacion() {
-    const role = true
-    return (
-        <NavigationContainer>
-            <Drawer.Navigator initialRouteName="Home">
-                {
-                    role ?
-                        <>
-                            <Drawer.Screen name="Home" component={HomeScreen} />
-                            <Drawer.Screen name="Profile" component={ProfileScreen} />
-                            <Drawer.Screen name="Mesas" component={ViewMesas} />
-                            
-                        </> :
-                        <>
-                            <Drawer.Screen name="Home" component={HomeScreen} />
-                            <Drawer.Screen name="Profile" component={ProfileScreen} />
-                            <Drawer.Screen name="Profile2" component={ProfileScreen2} />
-                            
-                        </>
-                }
+    const [role, setRole] = useState(null);
 
-            </Drawer.Navigator>
-        </NavigationContainer>
+    const obtenerRole = async () => {
+        const storedRole = await SecureStore.getItemAsync('role');
+        if (storedRole) {
+            console.log("Rol recuperado desde Secure Store:", storedRole);
+            setRole(storedRole);
+        } else {
+            console.log("No se encontró un rol en Secure Store.");
+            setRole(null);
+        }
+    };
+
+    useEffect(() => {
+        const fetchRole = async () => {
+            setTimeout( ()=> {
+                obtenerRole()
+            }, 1500 )
+        };
+      
+        fetchRole()
+    }, [auth.currentUser.uid]);
+
+    if (role === null) return (
+        <View style={styles.loaderContainer}>
+            <Text style={styles.title}>La Fondita</Text>
+            <Text style={styles.subtitle}>Obteniendo información</Text>
+            <ActivityIndicator size="large" color="#0000ff" />
+        </View>
+    )
+
+    return (
+        <Drawer.Navigator initialRouteName="Home">
+            {role === 'Admin' ? (
+                <>
+                    <Drawer.Screen name="Home" component={HomeScreen} />
+                    <Drawer.Screen name="Profile" component={ProfileScreen} />
+                    <Drawer.Screen name="Mesas" component={ViewMesas} />
+                    <Drawer.Screen name="Pedidos" component={Pedidos} />
+                    <Drawer.Screen name="Platillos" component={Platillos} />
+                    <Drawer.Screen name="Agregar Platillo" component={AddPlatillo} />
+                    <Drawer.Screen name="Actualizar Platillo" component={UpdatePlatillo} options={{drawerItemStyle: { display: 'none' }}} />
+                    <Drawer.Screen name="Agregar usuario" component={AddUser} />
+                    <Drawer.Screen name="Cerrar sesión" component={Logout} />
+                </>
+            ) : role === 'Mesero' ? (
+                <>
+                    <Drawer.Screen name="Home" component={HomeScreen} />
+                    <Drawer.Screen name="Profile2" component={ProfileScreen2} />
+                    <Drawer.Screen name="Pedidos" component={Pedidos} />
+                    <Drawer.Screen name="Cerrar sesión" component={Logout} />
+                </>
+            ) : null}
+        </Drawer.Navigator>
     );
 }
+
+
+
+
+
+
+
+
+const styles = StyleSheet.create({
+    loaderContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: '#ffffff', // Fondo blanco
+    },
+    title: {
+      fontSize: 32,
+      fontWeight: 'bold',
+      color: '#000', // Negro
+      marginBottom: 10,
+    },
+    subtitle: {
+      fontSize: 18,
+      color: '#666', // Gris
+      marginBottom: 20,
+    },
+  });
