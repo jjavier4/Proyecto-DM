@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react'
-import { Text, View, Button, Image, StyleSheet, } from 'react-native';
+import { Text, View, StyleSheet, } from 'react-native';
 import { collection, onSnapshot } from "firebase/firestore";
 import { db } from '../../utils/firebase'
 //componentes
 import Mesa from '../../components/Mesa';
-import AccionesMesa from './accionesMesa';
+import Mesas from './mesas';
 export default function ViewMesas({ navigation }) {
     const [verMesas, setVerMesas] = useState(true)
     const [mesaSeleccionada,setMesaSeleccionada] = useState(null)
@@ -13,7 +13,7 @@ export default function ViewMesas({ navigation }) {
 
             {verMesas ? 
             <VerMesas setVerMesas={setVerMesas} setMesaSeleccionada={setMesaSeleccionada}/> : 
-            <AccionesMesa setVerMesas={setVerMesas} mesaSeleccionada={mesaSeleccionada}/>}
+            <Mesas setVerMesas={setVerMesas} mesaSeleccionada={mesaSeleccionada}/>}
 
         </>
     )
