@@ -37,9 +37,4 @@
    ```bash
    git clone https://github.com/tuusuario/lafondita.git
    cd lafondita
-lafondita/
-├── frontend/          # Código del frontend
-├── backend/           # Código del backend
-├── public/            # Recursos públicos
-├── .env               # Variables de entorno
-└── README.md          # Documentación del proyecto
+
