@@ -7,6 +7,12 @@ import ViewMesas from './mesas/viewMesas';
 import Logout from './logout';
 import { auth } from '../utils/firebase';
 
+import AddUser from './AddUser'
+import Platillos from './Platillos'
+import AddPlatillo from './AddPlatillo';
+import UpdatePlatillo from './UpdatePlatillo';
+import Pedidos from './Pedidos';
+
 function HomeScreen({ navigation }) {
     return (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -84,12 +90,18 @@ export default function Aplicacion() {
                     <Drawer.Screen name="Home" component={HomeScreen} />
                     <Drawer.Screen name="Profile" component={ProfileScreen} />
                     <Drawer.Screen name="Mesas" component={ViewMesas} />
+                    <Drawer.Screen name="Pedidos" component={Pedidos} />
+                    <Drawer.Screen name="Platillos" component={Platillos} />
+                    <Drawer.Screen name="Agregar Platillo" component={AddPlatillo} />
+                    <Drawer.Screen name="Actualizar Platillo" component={UpdatePlatillo} options={{drawerItemStyle: { display: 'none' }}} />
+                    <Drawer.Screen name="Agregar usuario" component={AddUser} />
                     <Drawer.Screen name="Cerrar sesión" component={Logout} />
                 </>
             ) : role === 'Mesero' ? (
                 <>
                     <Drawer.Screen name="Home" component={HomeScreen} />
                     <Drawer.Screen name="Profile2" component={ProfileScreen2} />
+                    <Drawer.Screen name="Pedidos" component={Pedidos} />
                     <Drawer.Screen name="Cerrar sesión" component={Logout} />
                 </>
             ) : null}
