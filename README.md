@@ -24,10 +24,9 @@
 
 ## 🛠️ Tecnologías Utilizadas
 
-- **Frontend:** [Especificar las tecnologías usadas, como React, Bootstrap, etc.]
-- **Backend:** [Especificar las tecnologías usadas, como Node.js, Express, etc.]
-- **Base de Datos:** [Especificar, como MongoDB, MySQL, etc.]
-- **Autenticación:** [Indicar la herramienta, como Firebase Auth, JWT, etc.]
+- **Frontend:** [React Native, Expo, Bootstrap, etc.]
+- **Base de Datos:** [Firebase]
+- **Autenticación:** [Firebase Auth]
 
 ---
 
