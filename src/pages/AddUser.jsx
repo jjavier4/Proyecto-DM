@@ -218,7 +218,7 @@ export default function AddUser(){
                     <Text style={styles.errorText}>{error.password}</Text>
                 </View>
                 <View>    
-                    <Button title="Fecha de nacimiento" onPress={showDatePicker} />
+                    <Button title={`${ value.date ? value.date : 'Fecha de nacimiento' }`} onPress={showDatePicker} />
                     <DateTimePickerModal
                         isVisible={isDatePickerVisible}
                         mode="date"
