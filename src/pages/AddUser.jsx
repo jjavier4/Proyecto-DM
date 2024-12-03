@@ -1,9 +1,10 @@
 
 import { addDoc, collection } from "firebase/firestore";
 import { auth, db } from "../utils/firebase" 
-import { View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { useState } from "react";
 import { createUserWithEmailAndPassword } from "firebase/auth";
+import { Picker } from "@react-native-picker/picker";
 
 
 export default function AddUser(){
@@ -45,6 +46,7 @@ export default function AddUser(){
                 createUserWithEmailAndPassword(auth, value.email, value.password)
                 .then( user => {
                     console.log(user.user)
+                    Alert.alert("Usuario Agregado");
                 })
                 .catch((error) => {
                     const errorCode = error.code;
@@ -58,10 +60,10 @@ export default function AddUser(){
                 console.error("Error al agregar documento:", error);
                 reject( "Error al agregar documento: " + error )
             });
-
-
+            
+            
         } )
-
+        
     }
 
     function agregarUsuario(){
@@ -125,7 +127,7 @@ export default function AddUser(){
         lastName: '',
         email: '',
         password: '',
-        role: ''
+        role: 'Mesero'
     })
 
     function updateValue( key, newValue ){
@@ -133,8 +135,6 @@ export default function AddUser(){
         newValueState[key] = newValue
         setValue( newValueState )
     }
-
-    console.log(value)
 
     return (
         <>
@@ -180,13 +180,15 @@ export default function AddUser(){
                     <Text style={styles.errorText}>{error.password}</Text>
                 </View>
                 <View>    
-                    <Text style={styles.label}>Rol:</Text>
-                    <TextInput
-                        style={[styles.input, error.role ? styles.inputError : null]}
-                        placeholder="Ingresa el rol"
-                        value={value.role}
-                        onChangeText={ v => { updateValue('role', v) } }
-                        />
+                    <Text style={styles.label}>Rol:</Text>    
+                    <Picker
+                        selectedValue={ 'Mesero' }
+                        onValueChange={(itemValue, itemIndex) => updateValue('role', itemValue)}
+                        style={styles.picker}
+                    >
+                        <Picker.Item label="Mesero" value="Mesero" />
+                        <Picker.Item label="Administrador" value="Admin" />
+                    </Picker>
                     <Text style={styles.errorText}>{error.role}</Text>
                 </View>
                 <View>
@@ -233,11 +235,17 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         borderRadius: 5,
         alignItems: 'center',
-      },
+    },
       buttonText: {
         color: '#fff',
         fontSize: 16,
         fontWeight: 'bold',
-      },
+    },
+    picker: {
+        width: '100%',
+        height: 50,
+        borderColor: '#000',
+        borderWidth: 1,
+    },
 });
 

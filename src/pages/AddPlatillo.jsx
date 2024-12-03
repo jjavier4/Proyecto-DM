@@ -2,8 +2,9 @@
 
 import { addDoc, collection } from 'firebase/firestore';
 import { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native'
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, Alert } from 'react-native'
 import { db } from '../utils/firebase';
+import { Picker } from "@react-native-picker/picker";
 
 
 
@@ -35,6 +36,7 @@ export default function AddPlatilllo(){
             })
             .then((docRef) => {
                 console.log("Documento agregado con ID:", docRef.id);
+                Alert.alert(`Platillo "${name}", agregado correctamente.`);
                 resolve({ ok: true, msg: "Documento agregado con ID:" + docRef.id });
             })
             .catch((error) => {
@@ -71,6 +73,11 @@ export default function AddPlatilllo(){
             })
             .then( res => {
                 console.log(res)
+                setValue({
+                    name: '',
+                    category: 'Entrada',
+                    price: ''
+                })
             } )
             .catch( e => {
                 console.log(e)
@@ -89,7 +96,7 @@ export default function AddPlatilllo(){
     
     const [value, setValue] = useState({
         name: '',
-        category: '',
+        category: 'Entrada',
         price: ''
     })
 
@@ -126,12 +133,15 @@ export default function AddPlatilllo(){
                 </View>
                 <View>    
                     <Text style={styles.label}>Categoria:</Text>
-                    <TextInput
-                        style={[styles.input, error.category ? styles.inputError : null]}
-                        placeholder="Ingresa el nombre"
-                        value={value.category}
-                        onChangeText={ v => { updateValue('category', v) } }
-                        />
+                    <Picker
+                        selectedValue={ 'Entrada' }
+                        onValueChange={(itemValue, itemIndex) => updateValue('category', itemValue)}
+                        style={styles.picker}
+                    >
+                        <Picker.Item label="Entrada" value="Entrada" />
+                        <Picker.Item label="Bebida" value="Bebida" />
+                        <Picker.Item label="postre" value="Postre" />
+                    </Picker>
                     <Text style={styles.errorText}>{error.category}</Text>
                 </View>
                 <View>
@@ -201,6 +211,12 @@ const styles = StyleSheet.create({
         marginTop: 20,
         color: '#fff',
         fontSize: 18,
+    },
+    picker: {
+        width: '100%',
+        height: 80,
+        borderColor: '#000',
+        borderWidth: 1,
     },
 });
 

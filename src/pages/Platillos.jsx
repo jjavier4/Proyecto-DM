@@ -2,7 +2,7 @@
 
 import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, updateDoc } from 'firebase/firestore';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, FlatList, Button } from 'react-native'
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, FlatList, Button, Alert } from 'react-native'
 import { db } from '../utils/firebase';
 
 import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/native';
@@ -13,37 +13,47 @@ export default function Platillos(){
 
     const [ loader, setLoader ] = useState(true)
 
-    const [ platillos, setPlatillos ] = useState([])
+    const [ platillos, setPlatillos ] = useState([]) 
 
-    useFocusEffect(
-        useCallback(()=>{
+    const navigation = useNavigation();
 
-      
-            if( !loader ) { return }
+    useEffect(()=> {
 
-            getDocs(collection(db, "products"))
-            .then((docSnap) => {
-                
-                setPlatillos(
-                    docSnap.docs.map((doc) => ({
-                        id: doc.id,  // ID del documento
-                        ...doc.data(), // Los datos del documento
-                    }))
-                )
-                setLoader(false)
-            })
-            .catch((error) => {
-                console.error("Error al obtener el usuario:", error);
-                setError({ ...error, user: 'Usuario No valido :c' })
-            })
+        const unsubscribeFocus = navigation.addListener('focus', () => {
+            console.log('Pantalla enfocada');
+            setLoader(true)
+        });
 
-        }, [loader])
-    )  
+        const unsubscribeBlur = navigation.addListener('blur', () => {
+            console.log('Pantalla desenfocada');
+            setLoader(false)
+        });
+    }, [navigation])
 
-    const navigate = useNavigation()
+
+    useEffect(()=>{
+
+        if( !loader ) { return }
+
+        getDocs(collection(db, "products"))
+        .then((docSnap) => {
+            
+            setPlatillos(
+                docSnap.docs.map((doc) => ({
+                    id: doc.id,  // ID del documento
+                    ...doc.data(), // Los datos del documento
+                }))
+            )
+            setLoader(false)
+        })
+        .catch((error) => {
+            console.error("Error al obtener el usuario:", error);
+            setError({ ...error, user: 'Usuario No valido :c' })
+        })
+    }, [ loader ])
 
     function actualizarProducto(id){
-        navigate.navigate('Actualizar Platillo', { id })
+        navigation.navigate('Actualizar Platillo', { id })
     }
 
     function borrarPlatillo( id ){
@@ -51,14 +61,14 @@ export default function Platillos(){
         deleteDoc(doc(db, 'products', id))
         .then( ()=> {
             console.log('Documento Eliminado')
+            Alert.alert("Platillo Eliminado");
+            setLoader(true)
         } )
         .catch( (e)=> {
             console.log(e)
         } )
 
     }
-
-
 
     return (
         <>
