@@ -6,12 +6,14 @@ import { collection, addDoc, doc, updateDoc } from 'firebase/firestore';
 import AgregarPedido from './agregarPedido';
 import AccionesMesa from './accionesMesa';
 import VerPedidosMesa from './verPedidosMesa';
+import CerrarCuenta from './cerrarCuenta';
 export default function Mesas({ setVerMesas, mesaSeleccionada }) {
     // Estado para controlar qué pantalla mostrar
     const [ventanas, setVentanas] = useState({
         acciones: true,
         agregarPedidos: false,
         verPedidos: false,
+        ticket:false,
     });
 
     // Función para manejar la navegación entre ventanas
@@ -20,6 +22,7 @@ export default function Mesas({ setVerMesas, mesaSeleccionada }) {
             acciones: nuevaVentana === 'acciones',
             agregarPedidos: nuevaVentana === 'agregarPedidos',
             verPedidos: nuevaVentana === 'verPedidos',
+            ticket: nuevaVentana === 'ticket',
         });
     };
     return (
@@ -47,6 +50,15 @@ export default function Mesas({ setVerMesas, mesaSeleccionada }) {
 
                 ventanas.verPedidos && (
                     <VerPedidosMesa
+                        idMesa={mesaSeleccionada.id}
+                        cambiarVentana={cambiarVentana}
+                    />
+                )
+            }
+            {
+
+                ventanas.ticket && (
+                    <CerrarCuenta
                         idMesa={mesaSeleccionada.id}
                         cambiarVentana={cambiarVentana}
                     />

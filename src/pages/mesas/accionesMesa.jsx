@@ -5,7 +5,7 @@ import { db } from '../../utils/firebase';  // Importa la configuración de Fire
 import { collection, addDoc, doc, updateDoc } from 'firebase/firestore';
 import CajaAcciones from '../../components/CajaAcciones';
 
-export default function AccionesMesa({ setVerMesas, mesaSeleccionada,cambiarVentana }) {
+export default function AccionesMesa({ setVerMesas, mesaSeleccionada, cambiarVentana }) {
     const [cuentaAbierta, setCuentaAbierta] = useState(!mesaSeleccionada.estado)
     const AddSale = async (data) => {
         try {
@@ -39,7 +39,7 @@ export default function AccionesMesa({ setVerMesas, mesaSeleccionada,cambiarVent
             time: fechaFormateada[1],
             total: 0,
             id_table: mesaSeleccionada.id,
-            status:true
+            status: true
         }
         console.log(data)
         setCuentaAbierta(!cuentaAbierta)
@@ -51,8 +51,9 @@ export default function AccionesMesa({ setVerMesas, mesaSeleccionada,cambiarVent
         <View style={{ flex: 1, alignItems: 'center', width: '100%', flexDirection: 'column' }}>
             <Text>Acciones Mesa {mesaSeleccionada.id}</Text>
             <CajaAcciones titulo="Abrir Cuenta" funcion={abrirCuenta} estado={!cuentaAbierta} />
-            <CajaAcciones titulo="Agregar Pedidos" funcion={() => {cambiarVentana('agregarPedidos')}} estado={cuentaAbierta} />
-            <CajaAcciones titulo="Ver Pedidos Mesa" funcion={() => {cambiarVentana('verPedidos')}} estado={cuentaAbierta}/>
+            <CajaAcciones titulo="Agregar Pedidos" funcion={() => { cambiarVentana('agregarPedidos') }} estado={cuentaAbierta} />
+            <CajaAcciones titulo="Ver Pedidos Mesa" funcion={() => { cambiarVentana('verPedidos') }} estado={cuentaAbierta} />
+            <CajaAcciones titulo="Generar Ticket" funcion={() => { cambiarVentana('ticket') }} />
             <CajaAcciones titulo="Regresar" funcion={() => setVerMesas(true)} />
         </View>
     )
