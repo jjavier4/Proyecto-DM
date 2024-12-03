@@ -1,7 +1,10 @@
 import * as React from 'react';
+import { useEffect, useState } from 'react';
+import * as SecureStore from 'expo-secure-store';
 import { Text, View, Button } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
+import ViewMesas from './mesas/viewMesas';
+import Logout from './logout';
 
 function HomeScreen({ navigation }) {
     return (
@@ -30,7 +33,7 @@ function ProfileScreen({ navigation }) {
 function ProfileScreen2({ navigation }) {
     return (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-            <Text>Profile Screen</Text>
+            <Text>Profile Screen 2</Text>
             <Button
                 title="Go to Home"
                 onPress={() => navigation.navigate('Home')}
@@ -38,28 +41,45 @@ function ProfileScreen2({ navigation }) {
         </View>
     );
 }
+
 const Drawer = createDrawerNavigator();
 
-
 export default function Aplicacion() {
-    const role = false
-    return (
-        <NavigationContainer>
-            <Drawer.Navigator initialRouteName="Home">
-                {
-                    role ?
-                        <>
-                            <Drawer.Screen name="Home" component={HomeScreen} />
-                            <Drawer.Screen name="Profile" component={ProfileScreen} />
-                        </> :
-                        <>
-                        <Drawer.Screen name="Home" component={HomeScreen} />
-                        <Drawer.Screen name="Profile" component={ProfileScreen} />
-                        <Drawer.Screen name="Profile2" component={ProfileScreen2} />
-                        </>
-                }
+    const [role, setRole] = useState(null);
 
-            </Drawer.Navigator>
-        </NavigationContainer>
+    const obtenerRole = async () => {
+        const storedRole = await SecureStore.getItemAsync('role');
+        if (storedRole) {
+            console.log("Rol recuperado desde Secure Store:", storedRole);
+            setRole(storedRole);
+        } else {
+            console.log("No se encontró un rol en Secure Store.");
+            setRole(null);
+        }
+    };
+
+    useEffect(() => {
+        obtenerRole();
+    }, []);
+
+    if (role === null) return null;
+
+    return (
+        <Drawer.Navigator initialRouteName="Home">
+            {role === 'Admin' ? (
+                <>
+                    <Drawer.Screen name="Home" component={HomeScreen} />
+                    <Drawer.Screen name="Profile" component={ProfileScreen} />
+                    <Drawer.Screen name="Mesas" component={ViewMesas} />
+                    <Drawer.Screen name="Cerrar sesión" component={Logout} />
+                </>
+            ) : role === 'Mesero' ? (
+                <>
+                    <Drawer.Screen name="Home" component={HomeScreen} />
+                    <Drawer.Screen name="Profile2" component={ProfileScreen2} />
+                    <Drawer.Screen name="Cerrar sesión" component={Logout} />
+                </>
+            ) : null}
+        </Drawer.Navigator>
     );
 }
