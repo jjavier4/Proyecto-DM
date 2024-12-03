@@ -1,10 +1,11 @@
 
 import { addDoc, collection } from "firebase/firestore";
 import { auth, db } from "../utils/firebase" 
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert, Button } from 'react-native';
 import { useState } from "react";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { Picker } from "@react-native-picker/picker";
+import DateTimePickerModal from "react-native-modal-datetime-picker";
 
 
 export default function AddUser(){
@@ -20,6 +21,7 @@ export default function AddUser(){
         lastName = '',
         email = '',
         password = '',
+        date= '',
         role = ''
     }){
 
@@ -31,6 +33,7 @@ export default function AddUser(){
                 lastName === '' ||
                 email === '' ||
                 password === '' ||
+                date === '' ||
                 role === ''
             ){ resolve({ ok: false, msg: 'Valores no validos' }) }
             
@@ -39,6 +42,7 @@ export default function AddUser(){
                 last_name: lastName,
                 correo: email,
                 password,
+                date,
                 role
             })
             .then((docRef) => {
@@ -73,6 +77,7 @@ export default function AddUser(){
             lastName: '',
             email: '',
             password: '',
+            date: '',
             role: ''
         }
 
@@ -82,15 +87,17 @@ export default function AddUser(){
         if( !validarCorreo(value.email) ){ newErrors.email = 'Correo no valido' }
         if( value.password.length < 6 ){ newErrors.password = 'Contrasena corta' }
         if( value.password === '' ){ newErrors.password = 'Contrasena no valido' }
+        if( value.date === '' ){ newErrors.date = 'Fecha no valida' }
         if( value.role === '' ){ newErrors.role = 'Role no valido' }
 
-        console.log(newErrors)
+        console.log("Errores", newErrors)
 
         if(
             !newErrors.name
             && !newErrors.lastName
             && !newErrors.email
             && !newErrors.password
+            && !newErrors.date
             && !newErrors.role
         ){
 
@@ -99,10 +106,20 @@ export default function AddUser(){
                 lastName: value.lastName,
                 email: value.email,
                 password: value.password,
+                date: value.date,
                 role: value.role
             })
             .then( res => {
                 console.log( res )
+                Alert.alert('Usuario Agregado')
+                setValue({
+                    name: '',
+                    lastName: '',
+                    email: '',
+                    password: '',
+                    date: '',
+                    role: 'Mesero',
+                })
             } )
             .catch( e => {
                 console.error(e)
@@ -119,6 +136,7 @@ export default function AddUser(){
         lastName: '',
         email: '',
         password: '',
+        date: '',
         role: ''
     })
 
@@ -127,7 +145,8 @@ export default function AddUser(){
         lastName: '',
         email: '',
         password: '',
-        role: 'Mesero'
+        date: '',
+        role: 'Mesero',
     })
 
     function updateValue( key, newValue ){
@@ -135,6 +154,25 @@ export default function AddUser(){
         newValueState[key] = newValue
         setValue( newValueState )
     }
+
+
+    const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+
+    const showDatePicker = () => {
+        setDatePickerVisibility(true);
+    };
+
+    const hideDatePicker = () => {
+        setDatePickerVisibility(false);
+    };
+
+    const handleConfirm = (date) => {
+        console.warn("A date has been picked: ", date);
+        updateValue('date', new Date(date).toUTCString())
+        hideDatePicker();
+    };
+
+    console.log(value)
 
     return (
         <>
@@ -179,6 +217,16 @@ export default function AddUser(){
                         />
                     <Text style={styles.errorText}>{error.password}</Text>
                 </View>
+                <View>    
+                    <Button title="Fecha de nacimiento" onPress={showDatePicker} />
+                    <DateTimePickerModal
+                        isVisible={isDatePickerVisible}
+                        mode="date"
+                        onConfirm={handleConfirm}
+                        onCancel={hideDatePicker}
+                    />    
+                    <Text style={styles.errorText}>{error.date}</Text>
+                </View>    
                 <View>    
                     <Text style={styles.label}>Rol:</Text>    
                     <Picker
