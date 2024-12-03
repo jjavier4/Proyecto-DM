@@ -139,6 +139,7 @@ export default function AddPlatilllo(){
                         style={styles.picker}
                     >
                         <Picker.Item label="Entrada" value="Entrada" />
+                        <Picker.Item label="Plato Fuerte" value="PlatoFuerte" />
                         <Picker.Item label="Bebida" value="Bebida" />
                         <Picker.Item label="postre" value="Postre" />
                     </Picker>
