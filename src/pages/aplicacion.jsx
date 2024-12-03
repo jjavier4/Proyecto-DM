@@ -1,10 +1,11 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import * as SecureStore from 'expo-secure-store';
-import { Text, View, Button } from 'react-native';
+import { Text, View, Button, ActivityIndicator, StyleSheet } from 'react-native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import ViewMesas from './mesas/viewMesas';
 import Logout from './logout';
+import { auth } from '../utils/firebase';
 
 function HomeScreen({ navigation }) {
     return (
@@ -59,10 +60,22 @@ export default function Aplicacion() {
     };
 
     useEffect(() => {
-        obtenerRole();
-    }, []);
+        const fetchRole = async () => {
+            setTimeout( ()=> {
+                obtenerRole()
+            }, 1500 )
+        };
+      
+        fetchRole()
+    }, [auth.currentUser.uid]);
 
-    if (role === null) return null;
+    if (role === null) return (
+        <View style={styles.loaderContainer}>
+            <Text style={styles.title}>La Fondita</Text>
+            <Text style={styles.subtitle}>Obteniendo información</Text>
+            <ActivityIndicator size="large" color="#0000ff" />
+        </View>
+    )
 
     return (
         <Drawer.Navigator initialRouteName="Home">
@@ -83,3 +96,30 @@ export default function Aplicacion() {
         </Drawer.Navigator>
     );
 }
+
+
+
+
+
+
+
+
+const styles = StyleSheet.create({
+    loaderContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: '#ffffff', // Fondo blanco
+    },
+    title: {
+      fontSize: 32,
+      fontWeight: 'bold',
+      color: '#000', // Negro
+      marginBottom: 10,
+    },
+    subtitle: {
+      fontSize: 18,
+      color: '#666', // Gris
+      marginBottom: 20,
+    },
+  });
