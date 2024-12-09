@@ -1,27 +1,35 @@
 import React, { useState, useEffect } from 'react'
-import { Text, View, StyleSheet, } from 'react-native';
+import { Text, View, StyleSheet, ScrollView, } from 'react-native';
 import { collection, onSnapshot } from "firebase/firestore";
 import { db } from '../../utils/firebase'
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 //componentes
+import AccionesMesa from './accionesMesas'
 import Mesa from '../../components/Mesa';
-import Mesas from './mesas';
-export default function ViewMesas({ navigation }) {
-    const [verMesas, setVerMesas] = useState(true)
-    const [mesaSeleccionada,setMesaSeleccionada] = useState(null)
+import AgregarPedido from './agregarPedido';
+import VerPedidosMesa from './verPedidosMesa';
+import CerrarCuenta from './cerrarCuenta';
+const Stack = createNativeStackNavigator();
+export default function ViewMesas() {
+
     return (
-        <>
-
-            {verMesas ? 
-            <VerMesas setVerMesas={setVerMesas} setMesaSeleccionada={setMesaSeleccionada}/> : 
-            <Mesas setVerMesas={setVerMesas} mesaSeleccionada={mesaSeleccionada}/>}
-
-        </>
-    )
+        <Stack.Navigator initialRouteName="VerMesas">
+            <Stack.Screen name="VerMesas" component={VerMesas} options={{ headerShown: false }} />
+            <Stack.Screen name="AccionesMesa" component={AccionesMesa} options={{ headerShown: false }} />
+            <Stack.Screen name="AgregarPedidos" component={AgregarPedido} options={{ headerShown: false }} />
+            <Stack.Screen name="VerPedidosMesa" component={VerPedidosMesa} options={{ headerShown: false }} />
+            <Stack.Screen name="GenerarTicket" component={CerrarCuenta} options={{ headerShown: false }} />
+        </Stack.Navigator>
+    );
 }
 
-function VerMesas({setVerMesas,setMesaSeleccionada}) {
+function VerMesas({ navigation, setVerMesas, setMesaSeleccionada }) {
     const [mesas, setMesas] = useState([]);
-
+    function moverAccionMesa(mesaSeleccionada) {
+        navigation.navigate('AccionesMesa', {
+            mesaSeleccionada: mesaSeleccionada
+        })
+    }
     useEffect(() => {
         const unsubscribe = onSnapshot(
             collection(db, "tables"),
@@ -41,21 +49,22 @@ function VerMesas({setVerMesas,setMesaSeleccionada}) {
         return () => unsubscribe();
     }, []);
     return (
-        <View style={{ flex: 1, alignItems: 'center', width: '100%' }}>
-            <Text style={styles.titulo} >Vista mesas</Text>
-            <View style={styles.contenedorMesas}>
-                {
-                    mesas.map((mesa, index) => (
-                        <Mesa key={index} 
-                        mesa={mesa} 
-                        number={index + 1} 
-                        setVerMesas={setVerMesas} 
-                        setMesaSeleccionada={setMesaSeleccionada}/>
-                    ))
-                }
-            </View>
+        <ScrollView>
+            <View style={{ flex: 1, alignItems: 'center', width: '100%' }}>
+                <Text style={styles.titulo} >Vista mesas</Text>
+                <View style={styles.contenedorMesas}>
+                    {
+                        mesas.map((mesa, index) => (
+                            <Mesa key={index}
+                                mesa={mesa}
+                                number={index + 1}
+                                accionNavegar={() => moverAccionMesa(mesa)} />
+                        ))
+                    }
+                </View>
 
-        </View>
+            </View>
+        </ScrollView>
     )
 }
 

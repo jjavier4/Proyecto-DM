@@ -1,13 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { Text, View, StyleSheet } from 'react-native';
+import { Text, View, StyleSheet, ScrollView, } from 'react-native';
 import CajaAcciones from '../../components/CajaAcciones';
 import { collection, onSnapshot, doc, updateDoc, query, where } from 'firebase/firestore';
 import { db } from '../../utils/firebase';
 import CajaProductos from '../../components/CajaProductos';
 import CajaOrdenes from '../../components/CajaOrdenes';
 import CajaTicket from '../../components/CajaTicket';
+import { useRoute } from '@react-navigation/native';
+export default function CerrarCuenta() {
+    const route = useRoute();
 
-export default function CerrarCuenta({ cambiarVentana, idMesa }) {
+    // Acceder a las propiedades pasadas
+    const { idMesa } = route.params;
+
     const [productos, setProductos] = useState([]);
     const [sale, setSale] = useState([]);
     const [orders, setOrders] = useState([]);
@@ -116,16 +121,19 @@ export default function CerrarCuenta({ cambiarVentana, idMesa }) {
     }, [orders]);
 
     return (
-        <View style={{ flex: 1, alignItems: 'center', width: '100%', flexDirection: 'column' }}>
-            {console.log('mensaje desde cerrar cuenta', idMesa)}
-            {console.log(sale)}
-            {console.log(orders)}
-            {orders.map((order, index) => (
-                <CajaTicket key={index} order={order} />
-            ))}
-            <Text style={styles.titulo}>Total: ${total}</Text>
-            <CajaAcciones titulo={'Regresar'} funcion={() => cambiarVentana('acciones')} />
-        </View>
+        <ScrollView>
+            <View style={{ flex: 1, alignItems: 'center', width: '100%', flexDirection: 'column' }}>
+                {console.log('mensaje desde cerrar cuenta', idMesa)}
+                {console.log(sale)}
+                {console.log(orders)}
+                {orders.map((order, index) => (
+                    <CajaTicket key={index} order={order} />
+                ))}
+                
+                <Text style={styles.titulo}>Total: ${total}</Text>
+
+            </View>
+        </ScrollView>
     );
 }
 

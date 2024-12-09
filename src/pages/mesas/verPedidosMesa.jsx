@@ -1,12 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { Text, View, StyleSheet } from 'react-native';
+import { Text, View, ScrollView } from 'react-native';
 import CajaAcciones from '../../components/CajaAcciones';
-import { collection, onSnapshot, query, where } from 'firebase/firestore';
+import { collection, onSnapshot, query, where, getFirestore, doc, deleteDoc } from 'firebase/firestore';
 import { db } from '../../utils/firebase';
 import CajaProductos from '../../components/CajaProductos';
 import CajaOrdenes from '../../components/CajaOrdenes';
+import { useRoute } from '@react-navigation/native';
 
-export default function VerPedidosMesa({ idMesa, cambiarVentana }) {
+export default function VerPedidosMesa() {
+    const route = useRoute();
+
+    // Acceder a las propiedades pasadas
+    const { idMesa } = route.params;
     const [sales, setSales] = useState([]); // Cambié el nombre a 'sales' para indicar que es un array
     const [orders, setOrders] = useState([]);
 
@@ -74,19 +79,34 @@ export default function VerPedidosMesa({ idMesa, cambiarVentana }) {
         }
     }, [sales]);
 
-    return (
-        <View style={{ flex: 1, alignItems: 'center', width: '100%', flexDirection: 'column' }}>
-            <Text>Ver Pedidos Mesa</Text>
-            {
-                orders.map((order, index) => (
-                    <CajaOrdenes key={index} order={order} />
-                ))
-            }
+    const eliminarPedido = async (id) => {
+        try {
+            // Crea una referencia al documento
+            const docRef = doc(db, 'orders', id);
 
-            <CajaAcciones titulo={'Regresar'} funcion={() => cambiarVentana('acciones')} />
-            {console.log('Datos de la mesa:', idMesa)}
-            {console.log('Ventas:', sales)}
-            {console.log('Órdenes:', orders)}
-        </View>
+            // Elimina el documento
+            await deleteDoc(docRef);
+            console.log('Documento eliminado correctamente');
+        } catch (error) {
+            console.error('Error al eliminar el documento:', error);
+        }
+    };
+
+
+    return (
+        <ScrollView>
+            <View style={{ flex: 1, alignItems: 'center', width: '100%', flexDirection: 'column' }}>
+                <Text>Ver Pedidos Mesa</Text>
+                {
+                    orders.map((order, index) => (
+                        <CajaOrdenes key={index} order={order} eliminarPedido={eliminarPedido} />
+                    ))
+                }
+
+                {console.log('Datos de la mesa:', idMesa)}
+                {console.log('Ventas:', sales)}
+                {console.log('Órdenes:', orders)}
+            </View>
+        </ScrollView>
     );
 }
