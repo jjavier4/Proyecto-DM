@@ -2,10 +2,10 @@ import React from 'react'
 import { Text, View, Button, Image, StyleSheet, Pressable } from 'react-native';
 import colores from '../utils/colores';
 
-export default function Mesa({ mesa, number,setVerMesas,setMesaSeleccionada }) {
+export default function Mesa({ mesa, number,accionNavegar }) {
 
     return (
-        <Pressable style={styles.mesa} onPress={()=>{console.log(`Se preciono la mesa ${number}`); setMesaSeleccionada(mesa);setVerMesas(false) }}>
+        <Pressable style={styles.mesa} onPress={()=>{console.log(`Se preciono la mesa ${number}`);accionNavegar() }}>
             <Image
                 source={require('../../assets/imagenMesas.png')}
                 style={styles.imagen}

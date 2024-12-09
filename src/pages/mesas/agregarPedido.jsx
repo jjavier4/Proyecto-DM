@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Text, View, StyleSheet } from 'react-native';
-import CajaAcciones from '../../components/CajaAcciones';
+import { Text, View, StyleSheet, ScrollView } from 'react-native';
 import { collection, onSnapshot, addDoc, query, where } from 'firebase/firestore';
 import { db } from '../../utils/firebase';
 import CajaProductos from '../../components/CajaProductos';
+import { useRoute } from '@react-navigation/native';
 
-export default function AgregarPedido({ cambiarVentana, idMesa }) {
+export default function AgregarPedido() {
+    const route = useRoute();
+
+    // Acceder a las propiedades pasadas
+    const { idMesa } = route.params;
     const [productos, setProductos] = useState([]);
     const [sale, setSale] = useState([]);
 
@@ -71,7 +75,7 @@ export default function AgregarPedido({ cambiarVentana, idMesa }) {
         }
     };
 
- 
+
     function prepararDatos(Product, quantity) {
         if (sale.length === 0) {
             console.log('No hay ventas activas para esta mesa.');
@@ -91,23 +95,24 @@ export default function AgregarPedido({ cambiarVentana, idMesa }) {
     }
 
     return (
-        <View style={{ flex: 1, alignItems: 'center', width: '100%', flexDirection: 'column' }}>
-            {console.log('ID de la Mesa:', idMesa)}
-            {sale.length > 0 && console.log('ID de la Venta:', sale[0].id)}
+        <ScrollView>
+            <View style={{ flex: 1, alignItems: 'center', width: '100%', flexDirection: 'column' }}>
+                {console.log('ID de la Mesa:', idMesa)}
+                {sale.length > 0 && console.log('ID de la Venta:', sale[0].id)}
 
-            <Text style={styles.titulo}>Agregar Producto</Text>
+                <Text style={styles.titulo}>Agregar Producto</Text>
 
-            {/* Verificación si productos está vacío antes de mapear */}
-            {productos.length > 0 ? (
-                productos.map((producto) => (
-                    <CajaProductos key={producto.id} producto={producto} onPress={prepararDatos} />
-                ))
-            ) : (
-                <Text>No hay productos disponibles.</Text>
-            )}
+                {/* Verificación si productos está vacío antes de mapear */}
+                {productos.length > 0 ? (
+                    productos.map((producto) => (
+                        <CajaProductos key={producto.id} producto={producto} onPress={prepararDatos} />
+                    ))
+                ) : (
+                    <Text>No hay productos disponibles.</Text>
+                )}
 
-            <CajaAcciones titulo={'Regresar'} funcion={() => cambiarVentana('acciones')} />
-        </View>
+            </View>
+        </ScrollView>
     );
 }
 
