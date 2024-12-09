@@ -12,6 +12,7 @@ import Platillos from './Platillos'
 import AddPlatillo from './AddPlatillo';
 import UpdatePlatillo from './UpdatePlatillo';
 import Pedidos from './Pedidos';
+import AdminMesas from './AdminMesas';
 
 function HomeScreen({ navigation }) {
     return (
@@ -94,6 +95,7 @@ export default function Aplicacion() {
                     <Drawer.Screen name="Agregar Platillo" component={AddPlatillo} />
                     <Drawer.Screen name="Actualizar Platillo" component={UpdatePlatillo} options={{drawerItemStyle: { display: 'none' }}} />
                     <Drawer.Screen name="Agregar usuario" component={AddUser} />
+                    <Drawer.Screen name="Administrar Mesas" component={AdminMesas}  />
                     <Drawer.Screen name="Cerrar sesión" component={Logout} />
                 </>
             ) : role === 'Mesero' ? (
