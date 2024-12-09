@@ -214,7 +214,8 @@ export default function AddUser(){
                         placeholder="Ingresa la contraseña"
                         value={value.password}
                         onChangeText={ v => { updateValue('password', v) } }
-                        />
+                        secureTextEntry={true}
+                    />
                     <Text style={styles.errorText}>{error.password}</Text>
                 </View>
                 <View>    
