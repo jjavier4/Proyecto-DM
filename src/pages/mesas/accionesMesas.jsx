@@ -102,6 +102,12 @@ export default function AccionesMesas({ navigation }) {
                     idMesa: mesaSeleccionada.id
                 })}
                 estado={cuentaAbierta} />
+            <CajaAcciones
+                titulo="Regresar"
+                funcion={() => navigation.navigate('VerMesas', {
+                    idMesa: mesaSeleccionada.id
+                })}
+                estado={false} />
         </View>
     )
 }

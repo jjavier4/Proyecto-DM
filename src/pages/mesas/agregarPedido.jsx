@@ -3,7 +3,8 @@ import { Text, View, StyleSheet, ScrollView } from 'react-native';
 import { collection, onSnapshot, addDoc, query, where } from 'firebase/firestore';
 import { db } from '../../utils/firebase';
 import CajaProductos from '../../components/CajaProductos';
-import { useRoute } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import CajaAcciones from '../../components/CajaAcciones';
 
 export default function AgregarPedido() {
     const route = useRoute();
@@ -94,6 +95,8 @@ export default function AgregarPedido() {
         agregarProducto(dataOrder);
     }
 
+    const navigate = useNavigation()
+
     return (
         <ScrollView>
             <View style={{ flex: 1, alignItems: 'center', width: '100%', flexDirection: 'column' }}>
@@ -101,6 +104,13 @@ export default function AgregarPedido() {
                 {sale.length > 0 && console.log('ID de la Venta:', sale[0].id)}
 
                 <Text style={styles.titulo}>Agregar Producto</Text>
+                <CajaAcciones
+                    titulo="Regresar"
+                    funcion={() => navigate.navigate('VerMesasc', {
+                        idMesa: idMesa
+                    })}
+                    estado={false} 
+                />
 
                 {/* Verificación si productos está vacío antes de mapear */}
                 {productos.length > 0 ? (

@@ -87,7 +87,6 @@ export default function Platillos(){
                     renderItem={({ item }) => (
                     <View style={styles.itemContainer}>
                         <View style={styles.textContainer}>
-                        <Text style={styles.text}>Id: {item.id}</Text>
                         <Text style={styles.text}>Nombre: {item.name}</Text>
                         <Text style={styles.text}>Precio: ${item.price}</Text>
                         <Text style={styles.text}>Categoría: {item.category}</Text>
