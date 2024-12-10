@@ -106,7 +106,7 @@ export default function AgregarPedido() {
                 <Text style={styles.titulo}>Agregar Producto</Text>
                 <CajaAcciones
                     titulo="Regresar"
-                    funcion={() => navigate.navigate('VerMesasc', {
+                    funcion={() => navigate.navigate('VerMesas', {
                         idMesa: idMesa
                     })}
                     estado={false} 
